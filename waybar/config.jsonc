@@ -1,0 +1,193 @@
+// Hyprland-focused Waybar config derived from the system example.
+// Keeps the existing system/status information, but replaces Sway-only
+// modules with Hyprland-native ones and groups related items more clearly.
+{
+    "layer": "top",
+    "position": "top",
+    "height": 14,
+    "spacing": 6,
+
+    "modules-left": [
+        "hyprland/workspaces",
+        "hyprland/submap"
+    ],
+    "modules-center": [
+        "hyprland/window"
+    ],
+    "modules-right": [
+        "mpd",
+        "idle_inhibitor",
+        "pulseaudio",
+        "backlight",
+        "bluetooth",
+        "network",
+        "power-profiles-daemon",
+        "cpu",
+        "memory",
+        "temperature",
+        "keyboard-state",
+        "hyprland/language",
+        "battery",
+        "battery#bat2",
+        "custom/recording",
+        "clock",
+        "tray"
+    ],
+
+    "hyprland/workspaces": {
+        "show-special": false,
+        "sort-by": "number",
+        "move-to-monitor": true
+    },
+    "hyprland/submap": {
+        "format": "mode: {}",
+        "tooltip": false,
+        "always-on": false
+    },
+    "hyprland/window": {
+        "separate-outputs": true,
+        "max-length": 90
+    },
+    "hyprland/language": {
+        "format": "{short}"
+    },
+    "keyboard-state": {
+        "numlock": true,
+        "capslock": true,
+        "format": "{name} {icon}",
+        "format-icons": {
+            "locked": "L",
+            "unlocked": "U"
+        }
+    },
+    "mpd": {
+        "format": "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) [{songPosition}/{queueLength}] {volume}% music",
+        "format-disconnected": "Disconnected music",
+        "format-stopped": "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped music",
+        "unknown-tag": "N/A",
+        "interval": 5,
+        "consume-icons": {
+            "on": "cut "
+        },
+        "random-icons": {
+            "off": "shuffle-off ",
+            "on": "shuffle "
+        },
+        "repeat-icons": {
+            "on": "repeat "
+        },
+        "single-icons": {
+            "on": "repeat1 "
+        },
+        "state-icons": {
+            "paused": "pause",
+            "playing": "play"
+        },
+        "tooltip-format": "MPD (connected)",
+        "tooltip-format-disconnected": "MPD (disconnected)"
+    },
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "awake",
+            "deactivated": "idle"
+        }
+    },
+    "tray": {
+        "spacing": 10
+    },
+    "custom/recording": {
+        "exec": "$HOME/config/waybar/scripts/recording-status.sh",
+        "return-type": "json",
+        "interval": 1,
+        "tooltip": true,
+        "on-click": "$HOME/.local/bin/toggle-screen-record"
+    },
+    "clock": {
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format": "{:%H:%M}",
+        "format-alt": "{:%Y-%m-%d}"
+    },
+    "cpu": {
+        "format": "{usage}% cpu",
+        "tooltip": false
+    },
+    "memory": {
+        "format": "{}% mem"
+    },
+    "temperature": {
+        "critical-threshold": 80,
+        "format": "{temperatureC}C {icon}",
+        "format-icons": ["cool", "warm", "hot"]
+    },
+    "backlight": {
+        "format": "{percent}% light",
+        "format-icons": ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    },
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{capacity}% {icon}",
+        "format-full": "{capacity}% {icon}",
+        "format-charging": "{capacity}% charge",
+        "format-plugged": "{capacity}% plug",
+        "format-alt": "{time} {icon}",
+        "format-icons": ["bat0", "bat1", "bat2", "bat3", "bat4"]
+    },
+    "battery#bat2": {
+        "bat": "BAT2"
+    },
+    "power-profiles-daemon": {
+        "format": "{icon}",
+        "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+        "tooltip": true,
+        "format-icons": {
+            "default": "power",
+            "performance": "perf",
+            "balanced": "bal",
+            "power-saver": "save"
+        }
+    },
+    "network": {
+        "format-wifi": "{essid} ({signalStrength}%) wifi",
+        "format-ethernet": "{ipaddr}/{cidr} eth",
+        "tooltip-format": "{ifname} via {gwaddr}",
+        "format-linked": "{ifname} (No IP) eth",
+        "format-disconnected": "offline",
+        "format-alt": "{ifname}: {ipaddr}/{cidr}",
+        "on-click": "$HOME/config/waybar/scripts/toggle-foot-app.sh waybar-wifi 'Network Manager' nmtui",
+        "on-click-right": "bash -lc 'if [ \"$(nmcli radio wifi)\" = \"enabled\" ]; then nmcli radio wifi off; else nmcli radio wifi on; fi'"
+    },
+    "bluetooth": {
+        "format": "bt {status}",
+        "format-off": "bt off",
+        "format-disabled": "",
+        "format-connected": "bt {device_alias}",
+        "format-connected-battery": "bt {device_alias} {device_battery_percentage}%",
+        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+        "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+        "on-click": "$HOME/config/waybar/scripts/bluetooth-launcher.sh",
+        "on-click-right": "bash -lc 'if printf \"show\\nquit\\n\" | bluetoothctl | grep -q \"Powered: yes\"; then printf \"power off\\nquit\\n\" | bluetoothctl; else printf \"power on\\npairable on\\nagent on\\ndefault-agent\\nquit\\n\" | bluetoothctl; fi'"
+    },
+    "pulseaudio": {
+        "format": "{volume}% {icon} {format_source}",
+        "format-bluetooth": "{volume}% {icon} bt {format_source}",
+        "format-bluetooth-muted": "muted bt {icon} {format_source}",
+        "format-muted": "muted {format_source}",
+        "format-source": "{volume}% mic",
+        "format-source-muted": "mic-off",
+        "format-icons": {
+            "headphone": "headphone",
+            "hands-free": "handsfree",
+            "headset": "headset",
+            "phone": "phone",
+            "portable": "portable",
+            "car": "car",
+            "default": ["vol-low", "vol-mid", "vol-high"]
+        }
+    }
+}
