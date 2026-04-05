@@ -1,0 +1,7 @@
+# Local secrets - never commit these
+.zshrc.secret
+.zshrc.local
+
+# Private configs that shouldn't be shared
+*private*
+*secret*

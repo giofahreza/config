@@ -1,0 +1,6 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "parent=$(basename $(dirname $(pwd))); current=$(basename $(pwd)); [ \"$parent\" = \"/\" ] && echo \"$current\" || echo \"$parent/$current\" | tr -d '\\n'; git branch --show-current 2>/dev/null | xargs -I {} echo ' @ {}'"
+  }
+}
