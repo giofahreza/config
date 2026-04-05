@@ -43,7 +43,7 @@ EOF
 ~/.config/giofahreza-config/setup-neo-tree-hidden-files.sh
 ```
 
-**Note:** This modifies the LazyVim Neo-tree extra file. Re-run this script after LazyVim updates.
+**Note:** This copies the Neo-tree extra config to your nvim LazyVim cache. Re-run this script after LazyVim updates.
 
 ### Reload shell
 
