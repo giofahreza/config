@@ -3,6 +3,11 @@ if [ -z "${ZSH_VERSION:-}" ]; then
   return 0 2>/dev/null || exit 0
 fi
 
+# Powerlevel10k instant prompt. Keep this near the top of ~/.zshrc.
+if [[ -r "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 export LANG=C.UTF-8
 export LC_ALL=C.UTF-8
 
@@ -12,7 +17,11 @@ fi
 
 export SHELL=/usr/bin/zsh
 
-if [ -n "${SSH_CONNECTION:-}" ] || [ -n "${TMUX:-}" ]; then
+# Only load interactive shell customizations in interactive sessions.
+if [[ -o interactive ]]; then
+  # Keep inherited no-color environments from muting terminal TUIs.
+  unset NO_COLOR
+
   export PATH="$HOME/.local/bin:$HOME/.local/scripts:$HOME/.opencode/bin:$PATH"
   export NNN_OPENER=xdg-open
   export NVM_DIR="$HOME/.nvm"
@@ -41,6 +50,19 @@ if [ -n "${SSH_CONNECTION:-}" ] || [ -n "${TMUX:-}" ]; then
   alias cx='claude --dangerously-skip-permissions'
   alias grep='grep --color=auto'
   alias md2pdf='md-to-pdf --config-file ~/.config/md2pdf-config.json'
+
+  cox() {
+    codex --yolo --profile default
+  }
+
+  coxd() {
+    codex --yolo --profile deepseek
+  }
+
+  coxm() {
+     codex --yolo --profile minimax
+  }
+
 
   codex-agent() {
     local agent_id="$1"
@@ -82,6 +104,24 @@ if [ -n "${SSH_CONNECTION:-}" ] || [ -n "${TMUX:-}" ]; then
     claude --dangerously-skip-permissions "$@"
   }
 
+  cdps(){
+    if [[ -z "${DEEPSEEK_API_KEY:-}" ]]; then
+      echo "Set DEEPSEEK_API_KEY before using cglm." >&2
+      return 1
+    fi
+
+    IS_SANDBOX=1 \
+    ANTHROPIC_BASE_URL="https://api.deepseek.com/anthropic" \
+    ANTHROPIC_AUTH_TOKEN="${DEEPSEEK_API_KEY:-}" \
+    ANTHROPIC_MODEL="deepseek-v4-pro[1m]" \
+    ANTHROPIC_DEFAULT_OPUS_MODEL="deepseek-v4-pro[1m]" \
+    ANTHROPIC_DEFAULT_SONNET_MODEL="deepseek-v4-pro[1m]" \
+    ANTHROPIC_DEFAULT_HAIKU_MODEL="deepseek-v4-flash" \
+    CLAUDE_CODE_SUBAGENT_MODEL="deepseek-v4-flash" \
+    CLAUDE_CODE_EFFORT_LEVEL="max" \
+    claude --dangerously-skip-permissions "$@"
+  }
+
   cglm() {
     if [[ -z "${ANTHROPIC_BASE_URL:-}" || -z "${ANTHROPIC_API_KEY:-}" ]]; then
       echo "Set ANTHROPIC_BASE_URL and ANTHROPIC_API_KEY before using cglm." >&2
@@ -103,13 +143,24 @@ if [ -n "${SSH_CONNECTION:-}" ] || [ -n "${TMUX:-}" ]; then
   gh-nikel() {
     git config user.email "giofahreza@ulyssestwo.com" &&
     printf 'git user.email=%s\n' "$(git config user.email)"
+    if (( $# )); then
+      GH_CONFIG_DIR="$HOME/.config/gh-nikel" gh "$@"
+    fi
   }
 
-  PROMPT='%F{39}%~%f %# '
-  RPROMPT=
-  unsetopt promptcr
-  unsetopt promptsp
-else
+  if [[ -r "$HOME/.powerlevel10k/powerlevel10k.zsh-theme" ]]; then
+    source "$HOME/.powerlevel10k/powerlevel10k.zsh-theme"
+    if [[ -r "$HOME/config/zsh/p10k.zsh" ]]; then
+      source "$HOME/config/zsh/p10k.zsh"
+    elif [[ -r "$HOME/.p10k.zsh" ]]; then
+      source "$HOME/.p10k.zsh"
+    fi
+  else
+    PROMPT='%F{39}%~%f %# '
+    RPROMPT=
+    unsetopt promptcr
+    unsetopt promptsp
+  fi
   if [ -f "$HOME/.config/giofahreza-config-20260324/zsh/.zshrc" ]; then
     source "$HOME/.config/giofahreza-config-20260324/zsh/.zshrc"
   fi
@@ -129,8 +180,8 @@ if [ -f "$HOME/.zshrc.secret" ]; then
 fi
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/root/.sdkman"
-[[ -s "/root/.sdkman/bin/sdkman-init.sh" ]] && source "/root/.sdkman/bin/sdkman-init.sh"
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # Prefer normal completion behavior over menu-style cycling/listing on first Tab.
 unsetopt menucomplete
@@ -145,3 +196,5 @@ bindkey '^[[Z' reverse-menu-complete
 zstyle ':completion:*' menu no
 zstyle ':completion:*' list-prompt '%S%M matches%s'
 zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
+
+export ATLASSIAN_MCP_TOKEN="$(cat ~/.codex/.atlassian-token 2>/dev/null)"

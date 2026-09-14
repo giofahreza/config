@@ -21,6 +21,7 @@
         "backlight",
         "bluetooth",
         "network",
+        "custom/wifi-band",
         "power-profiles-daemon",
         "cpu",
         "memory",
@@ -160,6 +161,12 @@
         "on-click": "$HOME/config/waybar/scripts/toggle-foot-app.sh waybar-wifi 'Network Manager' nmtui",
         "on-click-right": "bash -lc 'if [ \"$(nmcli radio wifi)\" = \"enabled\" ]; then nmcli radio wifi off; else nmcli radio wifi on; fi'"
     },
+    "custom/wifi-band": {
+        "exec": "$HOME/config/waybar/scripts/wifi-band.sh",
+        "return-type": "json",
+        "interval": 10,
+        "tooltip": true
+    },
     "bluetooth": {
         "format": "bt {status}",
         "format-off": "bt off",
@@ -180,6 +187,7 @@
         "format-muted": "muted {format_source}",
         "format-source": "{volume}% mic",
         "format-source-muted": "mic-off",
+        "on-click": "$HOME/config/waybar/scripts/volume-launcher.sh",
         "format-icons": {
             "headphone": "headphone",
             "hands-free": "handsfree",

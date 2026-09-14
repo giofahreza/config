@@ -10,7 +10,7 @@ if command -v blueman-manager >/dev/null 2>&1; then
         exit 0
     fi
 
-    exec blueman-manager
+    exec env GTK_THEME="${GTK_THEME:-Adwaita:dark}" GTK_APPLICATION_PREFER_DARK_THEME=1 blueman-manager
 fi
 
 if command -v gnome-control-center >/dev/null 2>&1; then
@@ -19,7 +19,7 @@ if command -v gnome-control-center >/dev/null 2>&1; then
         exit 0
     fi
 
-    exec gnome-control-center bluetooth
+    exec env GTK_THEME="${GTK_THEME:-Adwaita:dark}" GTK_APPLICATION_PREFER_DARK_THEME=1 gnome-control-center bluetooth
 fi
 
 if command -v notify-send >/dev/null 2>&1; then
