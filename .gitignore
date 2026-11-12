@@ -5,3 +5,13 @@
 # Private configs that shouldn't be shared
 *private*
 *secret*
+
+# Claude Code (~/.claude -> claude/): track hand-written config only.
+# Credentials, history, sessions, transcripts, caches, logs stay out.
+claude/*
+!claude/CLAUDE.md
+!claude/settings.json
+!claude/settings.local.json
+!claude/hooks/
+!claude/skills/
+claude/skills/synced/

@@ -1,0 +1,43 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
+    "allow": [
+      "Artifact"
+    ],
+    "ask": [
+      "Artifact(action:publish)",
+      "Artifact(action:delete)"
+    ]
+  },
+  "model": "sonnet",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/hooks/require-context-before-edit.py\"",
+            "timeout": 15,
+            "statusMessage": "Checking CLAUDE.md and code style were read..."
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "parent=$(basename $(dirname $(pwd))); current=$(basename $(pwd)); [ \"$parent\" = \"/\" ] && echo \"$current\" || echo \"$parent/$current\" | tr -d '\\n'; git branch --show-current 2>/dev/null | xargs -I {} echo ' @ {}'"
+  },
+  "modelSettings": {
+    "claude-sonnet-5-5": {
+      "effortLevel": "xhigh"
+    }
+  },
+  "tui": "fullscreen",
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark-daltonized"
+}
