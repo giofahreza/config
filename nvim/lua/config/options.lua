@@ -13,6 +13,7 @@ vim.opt.backup = false
 vim.opt.showcmd = true
 vim.opt.cmdheight = 1
 vim.opt.laststatus = 3
+vim.opt.report = 0
 vim.opt.expandtab = true
 vim.opt.scrolloff = 10
 vim.opt.backupskip = { "/tmp/*", "/private/tmp/*" }
@@ -31,6 +32,7 @@ vim.opt.splitright = true -- Put new windows right of current
 vim.opt.splitkeep = "cursor"
 vim.opt.mouse = "a"
 vim.opt.swapfile = false
+vim.opt.clipboard = "unnamedplus"
 
 -- Undercurl
 vim.cmd([[let &t_Cs = "\e[4:3m"]])
@@ -53,24 +55,25 @@ vim.cmd([[au BufNewFile,BufRead Podfile setf ruby]])
 --   }
 -- end
 
--- Enable OSC 52 clipboard support (works through SSH)
-vim.g.clipboard = {
-  name = "OSC 52",
-  copy = {
-    ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
-    ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
-  },
-  paste = {
-    ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
-    ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
-  },
-}
-
--- Fallback to wl-copy/wl-paste for local WSL (when not in SSH)
 local in_wsl = os.getenv("WSL_DISTRO_NAME") ~= nil
 local in_ssh = os.getenv("SSH_CONNECTION") ~= nil or os.getenv("SSH_CLIENT") ~= nil or os.getenv("SSH_TTY") ~= nil
+local in_wayland = os.getenv("WAYLAND_DISPLAY") ~= nil
+local has_wl_copy = vim.fn.executable("wl-copy") == 1 and vim.fn.executable("wl-paste") == 1
 
-if in_wsl and not in_ssh then
+if in_wayland and has_wl_copy and not in_ssh then
+  vim.g.clipboard = {
+    name = "wl-clipboard",
+    copy = {
+      ["+"] = { "wl-copy", "--foreground", "--type", "text/plain" },
+      ["*"] = { "wl-copy", "--foreground", "--primary", "--type", "text/plain" },
+    },
+    paste = {
+      ["+"] = { "wl-paste", "--no-newline" },
+      ["*"] = { "wl-paste", "--no-newline", "--primary" },
+    },
+    cache_enabled = true,
+  }
+elseif in_wsl and not in_ssh and has_wl_copy then
   -- Only use wl-copy/wl-paste when in local WSL (not SSH)
   vim.g.clipboard = {
     name = "wsl clipboard",
@@ -84,4 +87,24 @@ if in_wsl and not in_ssh then
     },
     cache_enabled = true,
   }
+elseif in_ssh then
+  -- Use OSC 52 over SSH when the local terminal supports it.
+  vim.g.clipboard = {
+    name = "OSC 52",
+    copy = {
+      ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+      ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+    },
+    paste = {
+      ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+      ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+    },
+  }
 end
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "VeryLazy",
+  callback = function()
+    vim.opt.clipboard = "unnamedplus"
+  end,
+})
