@@ -4,22 +4,33 @@ Personal configuration files for zsh, nvim, tmux, wezterm, hyprland, and waybar.
 
 ## Setup
 
-Clone this repository:
+This repository is stored at `~/config` and is the source of truth for the personal configs below. On a new machine, clone it there:
 ```bash
-git clone https://github.com/giofahreza/config.git ~/.config/giofahreza-config
-cd ~/.config/giofahreza-config
+git clone https://github.com/giofahreza/config.git ~/config
+cd ~/config
 ```
 
-### Create symlinks
+### Link the configurations
 
 ```bash
-# zsh config
-ln -sf ~/.config/giofahreza-config/zsh/.zshrc ~/.zshrc
+# Zsh startup and Powerlevel10k theme
+ln -sfnT "$HOME/config/zsh/.zshrc" "$HOME/.zshrc"
+ln -sfnT "$HOME/config/zsh/p10k.zsh" "$HOME/.p10k.zsh"
 
-# Claude Code config
-mkdir -p ~/.claude
-ln -sf ~/.config/giofahreza-config/.claude/settings.json ~/.claude/settings.json
+# Application configs use the standard XDG paths, backed by ~/config.
+mkdir -p "$HOME/.config"
+for app in fuzzel hypr nvim tmux waybar; do
+  ln -sfnT "$HOME/config/$app" "$HOME/.config/$app"
+done
+
+# Claude Code and Codex homes (whole folders)
+ln -sfnT "$HOME/config/claude" "$HOME/.claude"
+ln -sfnT "$HOME/config/codex" "$HOME/.codex"
 ```
+
+Git tracks only the hand-written files in `claude/` and `codex/` (settings, CLAUDE.md, hooks, custom skills, Codex `*.config.toml` and model catalogs). Credentials, history, sessions, databases, logs and caches stay local; see `.gitignore`.
+
+Hyprshell is launched with explicit paths to `~/config/hyprshell/config.toml` and `~/config/hyprshell/share`, so it does not need a `~/.config/hyprshell` symlink.
 
 ### Create secrets file
 
@@ -34,16 +45,12 @@ export ANTHROPIC_API_KEY="your-api-key-here"
 # Claude Code (cc) - Optional Anthropic API
 # export ANTHROPIC_BASE_URL="https://api.anthropic.com"
 # export ANTHROPIC_API_KEY="your-key-here"
+
+# IO Gateway, used by cc and by Codex's aiproxy provider (cox)
+export IOGW_BASE_URL="https://your-gateway-host"
+export IOGW_GATEWAY_KEY="your-gateway-key"
 EOF
 ```
-
-### Configure Neo-tree to show hidden files
-
-```bash
-~/.config/giofahreza-config/setup-neo-tree-hidden-files.sh
-```
-
-**Note:** This copies the Neo-tree extra config to your nvim LazyVim cache. Re-run this script after LazyVim updates.
 
 ### Reload shell
 
@@ -55,10 +62,11 @@ source ~/.zshrc
 
 - `zsh/.zshrc` - Zsh configuration with aliases and functions
 - `zsh/p10k.zsh` - P10k powerlevel10k theme
-- `.claude/settings.json` - Claude Code CLI status line
+- `claude/` - Claude Code home (`~/.claude`): settings, CLAUDE.md, hooks, custom skills
+- `codex/` - Codex home (`~/.codex`): config profiles and model catalogs
 - `.gitignore` - Git ignore rules for secret files
 - `nvim/` - Neovim configuration (LazyVim based)
-  - `lua/plugins/extras/editor/neo-tree.lua` - Neo-tree extra with hidden files enabled
+  - `lua/plugins/neo-tree.lua` - Neo-tree override that shows hidden files
   - `lazyvim.json` - LazyVim configuration
   - `lua/plugins/` - Custom plugins (nvim-jdtls, etc.)
 - `tmux/` - Tmux configuration
@@ -66,7 +74,6 @@ source ~/.zshrc
 - `hypr/` - Hyprland window manager configuration
 - `hyprshell/` - Hyprland shell configuration
 - `waybar/` - Waybar status bar configuration
-- `setup-neo-tree-hidden-files.sh` - Script to configure Neo-tree hidden files
 
 ## Commands
 
