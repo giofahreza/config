@@ -16,13 +16,21 @@ if [ -f "$HOME/.profile" ]; then
 fi
 
 export SHELL=/usr/bin/zsh
+export EDITOR=nvim
+export VISUAL=nvim
+
+# Clear any pre-existing `cx` alias (from older versions of this file or
+# from the running shell) so the function defined below can take over. Done
+# unconditionally on every source so that re-sourcing .zshrc does not
+# trigger zsh's "defining function based on alias" parse error.
+unalias cx 2>/dev/null
 
 # Only load interactive shell customizations in interactive sessions.
 if [[ -o interactive ]]; then
   # Keep inherited no-color environments from muting terminal TUIs.
   unset NO_COLOR
 
-  export PATH="$HOME/.local/bin:$HOME/.local/scripts:$HOME/.opencode/bin:$PATH"
+  export PATH="$HOME/.local/bin:$HOME/.local/scripts:$PATH"
   export NNN_OPENER=xdg-open
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
@@ -47,12 +55,154 @@ if [[ -o interactive ]]; then
   alias lt='eza --tree --icons'
   alias lg='lazygit'
   alias c='claude --model sonnet'
-  alias cx='claude --dangerously-skip-permissions'
   alias grep='grep --color=auto'
   alias md2pdf='md-to-pdf --config-file ~/.config/md2pdf-config.json'
 
+  # cx: smart Claude CLI wrapper. Mirrors the routing in
+  # web-ai-cli's server/claude-sdk.js so that running `cx` locally behaves
+  # the same as the app:
+  #   - MiniMax-M3 / minimax-* → MiniMax provider (api.minimax.io/anthropic)
+  #   - everything else (opus / sonnet / haiku / default) → Claude subscription
+  #     (api.anthropic.com via OAuth or ANTHROPIC_API_KEY env)
+  #
+  # We pass --setting-sources project,local so the MiniMax env block in
+  # ~/.claude/settings.json (written by web-ai-cli for its own sessions)
+  # does not leak into direct `claude` invocations.
+  cx() {
+    local model=""
+    local args=()
+    while (( $# > 0 )); do
+      case "$1" in
+        --model|-m)
+          model="$2"
+          shift 2
+          ;;
+        --model=*)
+          model="${1#--model=}"
+          shift
+          ;;
+        -m=*)
+          model="${1#-m=}"
+          shift
+          ;;
+        *)
+          args+=("$1")
+          shift
+          ;;
+      esac
+    done
+
+    if [[ "${model:l}" == *minimax* ]]; then
+      local minimax_key
+      minimax_key=$(jq -r '.env.ANTHROPIC_API_KEY // empty' /home/giofahreza/.claude/settings.json 2>/dev/null)
+      if [[ -z "$minimax_key" ]]; then
+        minimax_key="${MINIMAX_API_KEY:-}"
+      fi
+      if [[ -z "$minimax_key" ]]; then
+        echo "MiniMax key not found in ~/.claude/settings.json or \$MINIMAX_API_KEY" >&2
+        return 1
+      fi
+
+      (
+        unset ANTHROPIC_AUTH_TOKEN \
+          ANTHROPIC_DEFAULT_OPUS_MODEL ANTHROPIC_DEFAULT_SONNET_MODEL \
+          ANTHROPIC_DEFAULT_HAIKU_MODEL ANTHROPIC_SMALL_FAST_MODEL
+        ANTHROPIC_BASE_URL="https://api.minimax.io/anthropic" \
+        ANTHROPIC_AUTH_TOKEN="$minimax_key" \
+        command claude \
+          --setting-sources project,local \
+          --dangerously-skip-permissions \
+          --model "$model" \
+          "${args[@]}"
+      )
+    else
+      command claude \
+        --setting-sources project,local \
+        --dangerously-skip-permissions \
+        ${model:+--model "$model"} \
+        "${args[@]}"
+    fi
+  }
+
   cox() {
-    codex --yolo --profile default
+    if [[ "$1" == "resume" ]]; then
+      shift
+      local argument session_id
+      local include_all=0
+      local use_last=0
+      local expects_value=0
+      local -a picker_args resume_options positionals
+
+      for argument in "$@"; do
+        if [[ "$argument" == "-h" || "$argument" == "--help" ]]; then
+          codex --yolo --profile default resume "$@"
+          return
+        fi
+      done
+
+      while (( $# > 0 )); do
+        argument="$1"
+        shift
+        if (( expects_value )); then
+          resume_options+=("$argument")
+          expects_value=0
+          continue
+        fi
+        case "$argument" in
+          --all)
+            include_all=1
+            ;;
+          --last)
+            use_last=1
+            ;;
+          --include-non-interactive)
+            ;;
+          -c|--config|--enable|--disable|--remote|--remote-auth-token-env|-i|--image|-m|--model|-p|--profile|-s|--sandbox|-C|--cd|--add-dir|-a|--ask-for-approval)
+            resume_options+=("$argument")
+            expects_value=1
+            ;;
+          --config=*|--enable=*|--disable=*|--remote=*|--remote-auth-token-env=*|--image=*|--model=*|--profile=*|--sandbox=*|--cd=*|--add-dir=*|--ask-for-approval=*)
+            resume_options+=("$argument")
+            ;;
+          -*)
+            resume_options+=("$argument")
+            ;;
+          *)
+            positionals+=("$argument")
+            ;;
+        esac
+      done
+
+      if (( expects_value )); then
+        codex --yolo --profile default resume "${resume_options[@]}"
+        return
+      fi
+
+      if (( ! use_last && ${#positionals[@]} > 0 )); then
+        codex --yolo --profile default resume "${resume_options[@]}" "${positionals[@]}"
+        return
+      fi
+
+      (( include_all )) && picker_args+=(--all)
+      (( use_last )) && picker_args+=(--last)
+      session_id="$(cox-resume-picker "${picker_args[@]}")" || return
+      [[ -n "$session_id" ]] || return
+      codex --yolo --profile default resume \
+        "${resume_options[@]}" "$session_id" "${positionals[@]}"
+    else
+      codex --yolo --profile default "$@"
+    fi
+  }
+
+  # Inject the IO Gateway URL for the aiproxy provider (kept out of codex/config.toml).
+  codex() {
+    if [[ -n "${IOGW_BASE_URL:-}" ]]; then
+      local gateway_base="${IOGW_BASE_URL%/}"
+      [[ "$gateway_base" == */codex ]] || gateway_base="$gateway_base/codex"
+      command codex -c "model_providers.aiproxy.base_url=\"$gateway_base\"" "$@"
+    else
+      command codex "$@"
+    fi
   }
 
   coxd() {
@@ -93,15 +243,24 @@ if [[ -o interactive ]]; then
   }
 
   cc() {
-    if [[ -z "${ANTHROPIC_BASE_URL:-}" || -z "${ANTHROPIC_API_KEY:-}" ]]; then
-      echo "Set ANTHROPIC_BASE_URL and ANTHROPIC_API_KEY before using cc." >&2
+    if [[ -z "${IOGW_BASE_URL:-}" || -z "${IOGW_GATEWAY_KEY:-}" ]]; then
+      echo "Set IOGW_BASE_URL and IOGW_GATEWAY_KEY before using cc." >&2
       return 1
     fi
 
-    ANTHROPIC_DEFAULT_HAIKU_MODEL="${ANTHROPIC_DEFAULT_HAIKU_MODEL:-gpt-4.1}" \
-    ANTHROPIC_DEFAULT_SONNET_MODEL="${ANTHROPIC_DEFAULT_SONNET_MODEL:-gemini-2.5-pro}" \
-    ANTHROPIC_DEFAULT_OPUS_MODEL="${ANTHROPIC_DEFAULT_OPUS_MODEL:-claude-sonnet-4}" \
-    claude --dangerously-skip-permissions "$@"
+    local gateway_base="${IOGW_BASE_URL%/}"
+    if [[ "$gateway_base" != */claude ]]; then
+      gateway_base="$gateway_base/claude"
+    fi
+
+    (
+      unset ANTHROPIC_AUTH_TOKEN ANTHROPIC_MODEL ANTHROPIC_DEFAULT_MODEL \
+        ANTHROPIC_DEFAULT_OPUS_MODEL ANTHROPIC_DEFAULT_SONNET_MODEL \
+        ANTHROPIC_DEFAULT_HAIKU_MODEL ANTHROPIC_SMALL_FAST_MODEL
+      ANTHROPIC_BASE_URL="$gateway_base" \
+      ANTHROPIC_API_KEY="$IOGW_GATEWAY_KEY" \
+      command claude --dangerously-skip-permissions "$@"
+    )
   }
 
   cdps(){
@@ -161,9 +320,6 @@ if [[ -o interactive ]]; then
     unsetopt promptcr
     unsetopt promptsp
   fi
-  if [ -f "$HOME/.config/giofahreza-config-20260324/zsh/.zshrc" ]; then
-    source "$HOME/.config/giofahreza-config-20260324/zsh/.zshrc"
-  fi
 fi
 
 if ! command -v eza >/dev/null 2>&1; then
@@ -197,4 +353,37 @@ zstyle ':completion:*' menu no
 zstyle ':completion:*' list-prompt '%S%M matches%s'
 zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
 
-export ATLASSIAN_MCP_TOKEN="$(cat ~/.codex/.atlassian-token 2>/dev/null)"
+export PATH="/usr/local/go/bin:$PATH"
+
+# >>> LazyDB installer >>>
+case ":$PATH:" in
+    *:/home/giofahreza/.local/bin:*) ;;
+    *) export PATH=/home/giofahreza/.local/bin:"$PATH" ;;
+esac
+#<<< LazyDB installer <<<
+
+
+GOPRIVATE="go.ulyssestwo.com/*"
+
+# Load and unload project environment variables when changing directories.
+eval "$(direnv hook zsh)"
+
+# strix
+export PATH=/home/giofahreza/.strix/bin:$PATH
+
+# Strix via the IOGW OpenAI-compatible gateway
+if [[ -n "${IOGW_BASE_URL:-}" && -n "${IOGW_GATEWAY_KEY:-}" ]]; then
+    export STRIX_LLM="openai/cop:gpt-4o"
+    export STRIX_API_TYPE="responses"
+    export LLM_API_BASE="${IOGW_BASE_URL%/}"
+    if [[ "$LLM_API_BASE" != */v1 ]]; then
+        export LLM_API_BASE="$LLM_API_BASE/v1"
+    fi
+    export LLM_API_KEY="$IOGW_GATEWAY_KEY"
+fi
+
+
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+bindkey '^[[A' history-beginning-search-backward   # optional: ↑ prefix search
+bindkey '^[[B' history-beginning-search-forward
+source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh  # must be last
