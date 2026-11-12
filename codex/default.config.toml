@@ -1,0 +1,95 @@
+model = "cod:gpt-5.6-luna"
+model_provider = "aiproxy"
+model_reasoning_effort = "xhigh"
+service_tier = "default"
+model_catalog_json = "~/.codex/model-catalogs/aiproxy.json"
+
+[tui]
+screen_reader_detection_done = true
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+"gpt-5.6-sol" = 4
+gpt-6-astra = 4
+"gpt-6.1-sol" = 4
+
+[projects."/home/giofahreza/dev/nkl/Hikvision-ISUP5.0-SDK"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/queue"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/go-bca-snap"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/dpthp"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/wf"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/.codex/skills"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/non-wf"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/onboarding"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/lazydb"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/onboarding-new/onboarding"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/onboarding2"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/LazyAPI"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/ayam-elba"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/TCD"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/Document-Generator-Service"]
+trust_level = "trusted"
+
+[notice.model_migrations]
+"gpt-5.4" = "gpt-5.6-terra"
+"gpt-5.5" = "gpt-6.1-sol"
+
+[hooks.state]
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:pre_tool_use:0:0"]
+trusted_hash = "sha256:a5510797c43c1bff471350d69d587baa84f9289e0e9be3c7faf2a6d693ded5cf"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:post_tool_use:0:0"]
+trusted_hash = "sha256:b8ee9578f165f8bdaa7d5351baaa612c91099c5750678615ba515a78ef93cba1"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:post_tool_use:1:0"]
+trusted_hash = "sha256:b8c16ceba5b1ee35f9d728bf1fc54b5f7e2bf4337b02a59af816b02e8649fd64"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:session_start:0:0"]
+trusted_hash = "sha256:6acb55716d4713028c9c2c7ddd0a99001794fd40f091cfdb0759f8566a2b17bc"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:user_prompt_submit:0:0"]
+trusted_hash = "sha256:753c9265d54c7ed0e71e3c2de1d57d7956d8f1f46e0578a0af4477dad61227db"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:user_prompt_submit:1:0"]
+trusted_hash = "sha256:02fc6c548d7afa50e2b31dd3dc8ebd1356aac514f4bba2ce8f77baded79252df"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:user_prompt_submit:2:0"]
+trusted_hash = "sha256:9aa54ac6582a274a08e67447fa1c956428285b94f7a9ae09be28f5309a13d3cb"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:stop:0:0"]
+trusted_hash = "sha256:1ae6b81fee3f9167fcfa4927a2770b903e5b9e1b7d98f0200afc7a268274cfe2"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:stop:1:0"]
+trusted_hash = "sha256:9bedaffd809aec72489d90145aa8c6f048ee4f0c22e4b56e8cea45bc52fdd699"

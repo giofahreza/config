@@ -1,0 +1,14 @@
+model = "MiniMax-M3"
+model_provider = "minimax"
+model_context_window = 512_000
+model_reasoning_effort = "xhigh"
+model_catalog_json = "~/.codex/model-catalogs/minimax.json"
+
+[projects."/home/giofahreza/dev/nkl/queue"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/onboarding"]
+trust_level = "trusted"
+
+[tui]
+screen_reader_detection_done = true

@@ -1,0 +1,334 @@
+model = "gpt-5.6-sol"
+model_reasoning_effort = "xhigh"
+service_tier = "standard"
+
+[projects."/home/giofahreza"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/gsc"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/nimbus"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/autoresearch-trading"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/auto-dev"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/ai-employee"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/siapin"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/config"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/nimbus2"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/nimbus3"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/nimbus4"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/TCD-AI-API-saas"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/TCD-AI-Employee"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/summarizer"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/Users-Portal"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/Users-Portal2"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/web-ai-cli"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/codex-gateway"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/content-ai"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/web-ai-cli"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/test-minimax-gateway"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/saas-laundry"]
+trust_level = "trusted"
+
+[projects."/tmp"]
+trust_level = "trusted"
+
+[projects."/tmp/danger-mode-smoke"]
+trust_level = "trusted"
+
+[projects."/tmp/danger-minimax-m3-smoke"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/gitvault"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/grandma"]
+trust_level = "trusted"
+
+[projects."/tmp/codex-gateway-glm-test"]
+trust_level = "trusted"
+
+[projects."/tmp/codex-gateway-glm-api-usage-codex"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/claude-test"]
+trust_level = "trusted"
+
+[projects."/tmp/web-ai-cli-agentic-smoke"]
+trust_level = "trusted"
+
+[projects."/tmp/web-ai-cli-agentic-finish-smoke"]
+trust_level = "trusted"
+
+[projects."/tmp/web-ai-cli-agentic-barang-stok"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/ai-self-learn-trading"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/agentic-pet-grooming-saas"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/agentic-pet-grooming-saas-214d118"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/agentic-smoke-barang-stok"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/agentic-smoke-barang-stok-v2"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/agentic-gpt54-recipe-pantry"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/agentic-minimax-m3-recipe-pantry"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/agentic-minimax-switcher-smoke"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/agentic-minimax-deployed-switcher-smoke"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/agentic-minimax-deployed-strategy-smoke"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/agentic-minimax-strict-counter-smoke-v2"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/agentic-minimax-strict-counter-smoke-v3"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/agentic-minimax-recipe-pantry-f9e585e"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/agentic-ui-codex-saascfg-1783856672"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/petshop-test"]
+trust_level = "trusted"
+
+[projects."/tmp/web-ai-cli-feature-benchmark-1784196546046"]
+trust_level = "trusted"
+
+[projects."/tmp/web-ai-cli-counter-benchmark-1784196727121"]
+trust_level = "trusted"
+
+[projects."/tmp/web-ai-cli-budget-benchmark-1784197449389"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/web-ai-cli-agentic-v2-comparison"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/web-ai-cli-agentic-v2-clean"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/web-ai-cli-agentic-v2-final"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/web-ai-cli-agentic-v2-final2"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/web-ai-cli-agentic-v2-final3"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/agentic-e2e-counter-20260722-133931"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/io-workbench"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/io-gateway"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/queue"]
+trust_level = "trusted"
+
+[projects."/tmp/codex-atlassian-test"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/saas-wa"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/giofahreza.github.io"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/pw-test/sandbox/demo"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/Personal"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/agentic-e2e-counter-20260722-133931/tests"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/crm"]
+trust_level = "trusted"
+
+[projects."/tmp/iowb-real-recovery.v7yZL6/project"]
+trust_level = "trusted"
+
+[projects."/tmp/iowb-real-recovery.5JW82c/project"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/TCD-Meida"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/test"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/nkl/ai-workflow-builder"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/TCD-Meida-new"]
+trust_level = "trusted"
+
+[projects."/tmp/iowb-kanban-rag-e2e/workspace/demo"]
+trust_level = "trusted"
+
+[projects."/tmp/iowb-e2e.Li3gT2/workspace"]
+trust_level = "trusted"
+
+[projects."/tmp/iowb-e2e-next.4Xkoe6/workspace"]
+trust_level = "trusted"
+
+[projects."/tmp/iowb-kanban-e2e-project.3ZBCMw"]
+trust_level = "trusted"
+
+[projects."/tmp/iowb-kanban-mutation-project.RptfHn"]
+trust_level = "trusted"
+
+[projects."/tmp/iowb-kanban-rag-e2e-project.KPJaqh"]
+trust_level = "trusted"
+
+[projects."/tmp/iowb-kanban-rag-fixed-project.vz7YcU"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/saas-my"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/zyxbit"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/garmin"]
+trust_level = "trusted"
+
+[notice.model_migrations]
+"gpt-5.3-codex" = "gpt-5.4"
+"gpt-5.2-codex" = "gpt-5.4"
+"gpt-5.4" = "gpt-5.6-terra"
+
+[mcp_servers.playwright_raw]
+command = "node"
+args = ["/home/giofahreza/.codex/mcp-playwright/node_modules/@playwright/mcp/cli.js", "--headless", "--browser", "chrome", "--executable-path", "/home/giofahreza/.cache/puppeteer/chrome/linux-146.0.7680.76/chrome-linux64/chrome", "--no-sandbox", "--image-responses", "omit"]
+
+[mcp_servers.playwright]
+command = "node"
+args = ["/home/giofahreza/.codex/mcp-resource-proxy/server.mjs", "--config", "/home/giofahreza/.codex/config.toml", "--upstream", "playwright_raw"]
+
+[mcp_servers.openaiDeveloperDocs]
+url = "https://developers.openai.com/mcp"
+
+[mcp_servers.atlassian]
+url = "https://mcp.atlassian.com/v1/mcp"
+# ~/.codex/config.toml
+[model_providers.aiproxy]
+name = "IO Gateway"
+# Real URL comes from $IOGW_BASE_URL via the codex() wrapper in ~/.zshrc.
+# This placeholder never resolves, so the gateway key is not sent anywhere if the variable is missing.
+base_url = "https://iogw-base-url-not-set.invalid/codex"
+env_key = "IOGW_GATEWAY_KEY"
+wire_api = "responses"
+requires_openai_auth = false
+
+[model_providers.minimax]
+name = "MiniMax"
+base_url = "https://api.minimax.io/v1"
+env_key = "MINIMAX_API_KEY"
+wire_api = "responses"
+requires_openai_auth = false
+
+[tui]
+screen_reader_detection_done = true
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+"gpt-5.6-sol" = 4
+gpt-6-astra = 2
+
+[marketplaces.axiomcode]
+source_type = "git"
+source = "https://github.com/AxiomCodeAI/axiomcodegraph.git"
+
+[plugins."axiomcode@axiomcode"]
+enabled = true
+
+[hooks.state]
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:pre_tool_use:0:0"]
+trusted_hash = "sha256:a5510797c43c1bff471350d69d587baa84f9289e0e9be3c7faf2a6d693ded5cf"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:post_tool_use:0:0"]
+trusted_hash = "sha256:b8ee9578f165f8bdaa7d5351baaa612c91099c5750678615ba515a78ef93cba1"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:post_tool_use:1:0"]
+trusted_hash = "sha256:b8c16ceba5b1ee35f9d728bf1fc54b5f7e2bf4337b02a59af816b02e8649fd64"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:session_start:0:0"]
+trusted_hash = "sha256:6acb55716d4713028c9c2c7ddd0a99001794fd40f091cfdb0759f8566a2b17bc"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:user_prompt_submit:0:0"]
+trusted_hash = "sha256:753c9265d54c7ed0e71e3c2de1d57d7956d8f1f46e0578a0af4477dad61227db"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:user_prompt_submit:1:0"]
+trusted_hash = "sha256:02fc6c548d7afa50e2b31dd3dc8ebd1356aac514f4bba2ce8f77baded79252df"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:user_prompt_submit:2:0"]
+trusted_hash = "sha256:9aa54ac6582a274a08e67447fa1c956428285b94f7a9ae09be28f5309a13d3cb"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:stop:0:0"]
+trusted_hash = "sha256:1ae6b81fee3f9167fcfa4927a2770b903e5b9e1b7d98f0200afc7a268274cfe2"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:stop:1:0"]
+trusted_hash = "sha256:9bedaffd809aec72489d90145aa8c6f048ee4f0c22e4b56e8cea45bc52fdd699"

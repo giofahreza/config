@@ -15,3 +15,18 @@ claude/*
 !claude/hooks/
 !claude/skills/
 claude/skills/synced/
+
+# Codex (~/.codex -> codex/): track config files only.
+# auth, credentials, history, sessions, sqlite databases, logs stay out.
+codex/*
+!codex/config.toml
+!codex/default.config.toml
+!codex/deepseek.config.toml
+!codex/minimax.config.toml
+!codex/aiproxy.config.toml
+!codex/model-catalogs/
+# Codex skills: track custom skills only; built-in and account-synced skills stay out.
+!codex/skills/
+codex/skills/.system/
+codex/skills/.bucket-*/
+codex/skills/????????-????-????-????-????????????_*/
