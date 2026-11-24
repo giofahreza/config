@@ -1,6 +1,6 @@
 # giofahreza-config
 
-Personal configuration files for zsh, nvim, tmux, wezterm, hyprland, and waybar.
+Personal configuration files for zsh, nvim, tmux, wezterm, Zen Browser, hyprland, and waybar.
 
 ## Setup
 
@@ -31,6 +31,24 @@ ln -sfnT "$HOME/config/codex" "$HOME/.codex"
 Git tracks only the hand-written files in `claude/` and `codex/` (settings, CLAUDE.md, hooks, custom skills, Codex `*.config.toml` and model catalogs). Credentials, history, sessions, databases, logs and caches stay local; see `.gitignore`.
 
 Hyprshell is launched with explicit paths to `~/config/hyprshell/config.toml` and `~/config/hyprshell/share`, so it does not need a `~/.config/hyprshell` symlink.
+
+### Zen Browser
+
+Open Zen once to create its profile, then link the shared shortcuts and startup settings:
+
+```bash
+sh "$HOME/config/zen/setup.sh"
+```
+
+The script finds Zen's default profile on macOS or Linux and links its `customKeys.json` and `user.js` to the matching files in `~/config/zen`. Existing files are backed up beside the originals. For another profile, pass its root directory (shown in `about:profiles`):
+
+```bash
+sh "$HOME/config/zen/setup.sh" "/path/to/zen/profile"
+```
+
+Edit shortcuts in `zen/customKeys.json` and startup preferences in `zen/user.js`, then restart Zen to load them. The startup preferences restore your previous windows and tabs, including regular unpinned tabs. Tabs you close yourself stay closed; private browsing tabs are not restored.
+
+Zen's shortcut editor can replace the symlink when saving; rerun the setup script to restore the repository configuration. Browser history, logins, sessions, and the rest of the profile stay local.
 
 ### Create secrets file
 
@@ -71,6 +89,7 @@ source ~/.zshrc
   - `lua/plugins/` - Custom plugins (nvim-jdtls, etc.)
 - `tmux/` - Tmux configuration
 - `wezterm/` - WezTerm configuration
+- `zen/` - Zen Browser shortcuts, session-restore preferences, and profile-link setup script
 - `hypr/` - Hyprland window manager configuration
 - `hyprshell/` - Hyprland shell configuration
 - `waybar/` - Waybar status bar configuration
@@ -85,6 +104,8 @@ source ~/.zshrc
 - `lg` - Lazygit
 
 ### Keybindings
+- Zen: Ctrl + grave (\`) - Next Space
+- Zen: Ctrl + Shift + grave (\`) - Previous Space
 - `<leader>fe` - Toggle Neo-tree (root directory)
 - `<leader>fE` - Toggle Neo-tree (current directory)
 - `<leader>e` - Toggle Neo-tree (root directory)

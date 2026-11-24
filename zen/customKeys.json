@@ -1,0 +1,10 @@
+{
+  "zen-workspace-forward": {
+    "modifiers": "control",
+    "key": "`"
+  },
+  "zen-workspace-backward": {
+    "modifiers": "control,shift",
+    "key": "~"
+  }
+}
