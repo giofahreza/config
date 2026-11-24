@@ -14,14 +14,13 @@ return {
   },
   {
     "iamcco/markdown-preview.nvim",
-    build = "cd app && npm install --omit=dev --no-package-lock && npm install msgpack-lite@0.1.26 --omit=dev --no-package-lock && chmod -x bin/markdown-preview-linux || true",
+    build = "cd app && npm install --omit=dev --no-package-lock && npm install msgpack-lite@0.1.26 --omit=dev --no-package-lock",
     init = function()
-      vim.g.mkdp_browser = "/home/giofahreza/.tarball-installations/zen/zen"
       vim.g.mkdp_echo_preview_url = 1
 
       -- The bundled linux binary crashes on this machine, so use the Node fallback.
       local bin = vim.fn.stdpath("data") .. "/lazy/markdown-preview.nvim/app/bin/markdown-preview-linux"
-      if vim.fn.executable(bin) == 1 then
+      if vim.fn.has("Linux") == 1 and vim.fn.executable(bin) == 1 then
         vim.fn.setfperm(bin, "rw-r--r--")
       end
     end,
