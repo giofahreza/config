@@ -135,6 +135,10 @@ if [[ -o interactive ]]; then
   cox() {
     if [[ "$1" == "resume" ]]; then
       shift
+      if ! command -v cox-resume-picker >/dev/null 2>&1; then
+        codex --yolo --profile default resume "$@"
+        return
+      fi
       local argument session_id
       local include_all=0
       local use_last=0
