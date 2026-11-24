@@ -4,18 +4,18 @@ if [ -z "${ZSH_VERSION:-}" ]; then
 fi
 
 # Powerlevel10k instant prompt. Keep this near the top of ~/.zshrc.
-if [[ -r "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+if [[ -t 0 && -t 1 && -r "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-export LANG=C.UTF-8
-export LC_ALL=C.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 if [ -f "$HOME/.profile" ]; then
   source "$HOME/.profile"
 fi
 
-export SHELL=/usr/bin/zsh
+export SHELL=/bin/zsh
 export EDITOR=nvim
 export VISUAL=nvim
 
@@ -31,7 +31,15 @@ if [[ -o interactive ]]; then
   unset NO_COLOR
 
   export PATH="$HOME/.local/bin:$HOME/.local/scripts:$PATH"
-  export NNN_OPENER=xdg-open
+  if [[ -d /opt/homebrew/bin ]]; then
+    typeset -U path
+    path=(/opt/homebrew/bin /opt/homebrew/sbin "$path[@]")
+  fi
+  if [[ -z "${JAVA_HOME:-}" && -x /opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin/java ]]; then
+    export JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home
+    path=("$JAVA_HOME/bin" "$path[@]")
+  fi
+  export NNN_OPENER=open
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
   [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
@@ -94,7 +102,7 @@ if [[ -o interactive ]]; then
 
     if [[ "${model:l}" == *minimax* ]]; then
       local minimax_key
-      minimax_key=$(jq -r '.env.ANTHROPIC_API_KEY // empty' /home/giofahreza/.claude/settings.json 2>/dev/null)
+      minimax_key=$(jq -r '.env.ANTHROPIC_API_KEY // empty' "$HOME/.claude/settings.json" 2>/dev/null)
       if [[ -z "$minimax_key" ]]; then
         minimax_key="${MINIMAX_API_KEY:-}"
       fi
@@ -307,7 +315,7 @@ if [[ -o interactive ]]; then
     fi
   }
 
-  if [[ -r "$HOME/.powerlevel10k/powerlevel10k.zsh-theme" ]]; then
+  if [[ -t 0 && -t 1 && -r "$HOME/.powerlevel10k/powerlevel10k.zsh-theme" ]]; then
     source "$HOME/.powerlevel10k/powerlevel10k.zsh-theme"
     if [[ -r "$HOME/config/zsh/p10k.zsh" ]]; then
       source "$HOME/config/zsh/p10k.zsh"
@@ -355,21 +363,15 @@ zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %
 
 export PATH="/usr/local/go/bin:$PATH"
 
-# >>> LazyDB installer >>>
-case ":$PATH:" in
-    *:/home/giofahreza/.local/bin:*) ;;
-    *) export PATH=/home/giofahreza/.local/bin:"$PATH" ;;
-esac
-#<<< LazyDB installer <<<
-
-
 GOPRIVATE="go.ulyssestwo.com/*"
 
 # Load and unload project environment variables when changing directories.
-eval "$(direnv hook zsh)"
+if [[ -o interactive ]] && command -v direnv >/dev/null 2>&1; then
+  eval "$(direnv hook zsh)"
+fi
 
 # strix
-export PATH=/home/giofahreza/.strix/bin:$PATH
+[[ ! -d "$HOME/.strix/bin" ]] || export PATH="$HOME/.strix/bin:$PATH"
 
 # Strix via the IOGW OpenAI-compatible gateway
 if [[ -n "${IOGW_BASE_URL:-}" && -n "${IOGW_GATEWAY_KEY:-}" ]]; then
@@ -383,7 +385,9 @@ if [[ -n "${IOGW_BASE_URL:-}" && -n "${IOGW_GATEWAY_KEY:-}" ]]; then
 fi
 
 
-source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-bindkey '^[[A' history-beginning-search-backward   # optional: ↑ prefix search
-bindkey '^[[B' history-beginning-search-forward
-source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh  # must be last
+if [[ -o interactive ]]; then
+  source "$HOME/.oh-my-zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh"
+  bindkey '^[[A' history-beginning-search-backward   # optional: ↑ prefix search
+  bindkey '^[[B' history-beginning-search-forward
+  source "$HOME/.oh-my-zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh"
+fi
