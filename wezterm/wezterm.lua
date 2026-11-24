@@ -12,4 +12,16 @@ config.window_padding = {
 -- Let tmux manage tabs.
 config.enable_tab_bar = false
 
+if wezterm.target_triple:find("darwin") then
+	-- Leave Option+Enter available to the
+	-- terminal application (for example, Codex's multiline input).
+	config.keys = {
+		{
+			key = "Enter",
+			mods = "ALT",
+			action = wezterm.action.DisableDefaultAssignment,
+		},
+	}
+end
+
 return config
