@@ -95,6 +95,40 @@ return {
     "nvim-lualine/lualine.nvim",
     opts = function(_, opts)
       local LazyVim = require("lazyvim.util")
+      local mode_icons = {
+        NORMAL = "",
+        ["O-PENDING"] = "",
+        INSERT = "",
+        VISUAL = "",
+        ["V-LINE"] = "󱓹",
+        ["V-BLOCK"] = "",
+        SELECT = "",
+        ["S-LINE"] = "",
+        ["S-BLOCK"] = "",
+        REPLACE = "",
+        ["V-REPLACE"] = "",
+        SEARCH = "",
+        COMMAND = "",
+        EX = "",
+        MORE = "",
+        CONFIRM = "",
+        SHELL = "",
+        TERMINAL = "",
+      }
+      opts.sections.lualine_a[1] = {
+        "mode",
+        -- Standard Nerd Font glyphs can extend into the next blank cell.
+        padding = { left = 1, right = 1 },
+        color = { gui = "bold" },
+        fmt = function(mode)
+          local cmdtype = vim.fn.getcmdtype()
+          if cmdtype == "/" or cmdtype == "?" then
+            return mode_icons.SEARCH
+          end
+          return mode_icons[mode] or ""
+        end,
+      }
+      opts.sections.lualine_c[3].padding = { left = 1, right = 1 }
       opts.sections.lualine_c[4] = {
         LazyVim.lualine.pretty_path({
           length = 0,
