@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Preserve the ~/config directory layout around the upstream installer,
+# which replaces ~/.config/toshy and cannot replace a directory symlink.
+set -euo pipefail
+
+config_dir="$HOME/config/toshy"
+xdg_dir="$HOME/.config/toshy"
+wrapper="$HOME/config/scripts/toshy-reinstall"
+state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/toshy"
+
+if [[ ! -L $xdg_dir || $(readlink -f "$xdg_dir") != "$config_dir" ]]; then
+    echo 'Expected ~/.config/toshy to link to ~/config/toshy.' >&2
+    exit 1
+fi
+
+mkdir -p "$state_dir"
+update_backup=$(mktemp -d "$state_dir/update-XXXXXXXX")
+cp -a "$config_dir" "$update_backup/previous"
+"$HOME/.local/bin/toshy-services-stop"
+
+restore_layout() {
+    result=$?
+    trap - EXIT
+    set +e
+    "$HOME/.local/bin/toshy-services-stop" >/dev/null 2>&1
+    if [[ $result -ne 0 && -d "$update_backup/previous" ]]; then
+        if [[ -d $xdg_dir && ! -L $xdg_dir ]]; then
+            mv "$xdg_dir" "$update_backup/failed-install"
+        fi
+        if [[ ! -e $xdg_dir && ! -L $xdg_dir ]]; then
+            mv "$update_backup/previous" "$xdg_dir"
+        fi
+        echo "Update failed; restoring the previous installation. Backup: $update_backup" >&2
+    fi
+    if [[ -d $xdg_dir && ! -L $xdg_dir && ! -e $config_dir ]]; then
+        mv "$xdg_dir" "$config_dir"
+    fi
+    if [[ -d $config_dir && ! -e $xdg_dir && ! -L $xdg_dir ]]; then
+        ln -s "$config_dir" "$xdg_dir"
+    fi
+    ln -sfn "$wrapper" "$HOME/.local/bin/toshy-reinstall"
+    systemctl --user daemon-reload
+    "$HOME/.local/bin/toshy-services-start"
+    exit "$result"
+}
+
+trap restore_layout EXIT
+unlink "$xdg_dir"
+mv "$config_dir" "$xdg_dir"
+bash "$xdg_dir/scripts/bootstrap.sh" "$@"

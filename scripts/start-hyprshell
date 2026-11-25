@@ -1,0 +1,45 @@
+#!/bin/sh
+set -eu
+
+if [ "${1:-}" != '--bindings-only' ]; then
+    log_file="${XDG_RUNTIME_DIR:-/tmp}/hyprshell.log"
+    pkill -x hyprshell >/dev/null 2>&1 || true
+    # Remove stale dynamic bindings before waiting for this daemon's bindings.
+    hyprctl keyword unbind 'ALT,Tab' >/dev/null
+    hyprctl keyword unbind 'ALT SHIFT,Tab' >/dev/null
+    hyprctl keyword unbind 'ALT,tab' >/dev/null
+    hyprctl keyword unbind 'ALT SHIFT,tab' >/dev/null
+    hyprctl keyword unbind 'ALT,grave' >/dev/null
+
+    HYPRSHELL_NO_USE_PLUGIN=1 setsid -f "$HOME/.local/bin/hyprshell" \
+        run \
+        -c "$HOME/config/hyprshell/config.toml" \
+        --system-data-dir "$HOME/config/hyprshell/share" \
+        >>"$log_file" 2>&1
+fi
+
+# This hyprshell version registers Alt+grave as reverse Alt+Tab. Toshy emits
+# Alt+grave for Command+grave, which should cycle the same application's windows.
+for _ in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do
+    if hyprctl -j binds | python3 -c '
+import json, sys
+raise SystemExit(not any(b["key"].lower() == "tab" and b["modmask"] == 8
+                         for b in json.load(sys.stdin)))'; then
+        # Allow the daemon to finish registering its complete binding set.
+        sleep 1
+        hyprctl keyword unbind 'ALT,Tab' >/dev/null
+        hyprctl keyword unbind 'ALT SHIFT,Tab' >/dev/null
+        hyprctl keyword unbind 'ALT,tab' >/dev/null
+        hyprctl keyword unbind 'ALT SHIFT,tab' >/dev/null
+        hyprctl keyword unbind 'ALT,grave' >/dev/null
+        hyprctl keyword unbind 'ALT SHIFT,grave' >/dev/null
+        hyprctl keyword bind "ALT,Tab,exec,$HOME/.local/bin/hyprshell socat '{\"OpenSwitch\":{\"reverse\":false}}'" >/dev/null
+        hyprctl keyword bind "ALT SHIFT,Tab,exec,$HOME/.local/bin/hyprshell socat '{\"OpenSwitch\":{\"reverse\":true}}'" >/dev/null
+        hyprctl keyword bind "ALT,grave,exec,$HOME/config/scripts/cycle-app-window" >/dev/null
+        hyprctl keyword bind "ALT SHIFT,grave,exec,$HOME/config/scripts/cycle-app-window --reverse" >/dev/null
+        exit 0
+    fi
+    sleep 0.2
+done
+echo 'hyprshell did not register its Alt+Tab backend.' >&2
+exit 1

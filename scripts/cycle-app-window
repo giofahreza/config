@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+"""Hyprland backend for Toshy's Command+grave and Shift+Command+grave."""
+import json
+import subprocess
+import sys
+
+
+def query(kind):
+    return json.loads(subprocess.check_output(["hyprctl", "-j", kind]))
+
+
+def app_class(window):
+    name = window.get("class", "").casefold()
+    return "foot" if name == "org.codeberg.dnkl.foot.desktop" else name
+
+
+active = query("activewindow")
+if not active.get("address") or not app_class(active):
+    sys.exit(0)
+
+windows = sorted(
+    (
+        window
+        for window in query("clients")
+        if window.get("mapped") and app_class(window) == app_class(active)
+    ),
+    key=lambda window: window["address"],
+)
+addresses = [window["address"] for window in windows]
+if len(addresses) < 2 or active["address"] not in addresses:
+    sys.exit(0)
+
+step = -1 if "--reverse" in sys.argv[1:] else 1
+target = addresses[(addresses.index(active["address"]) + step) % len(addresses)]
+subprocess.run(
+    ["hyprctl", "dispatch", "focuswindow", f"address:{target}"],
+    check=True,
+    stdout=subprocess.DEVNULL,
+)
