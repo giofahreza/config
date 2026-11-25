@@ -390,8 +390,34 @@ fi
 
 
 if [[ -o interactive ]]; then
-  source "$HOME/.oh-my-zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh"
+  # Resolve optional plugins across standalone, Oh My Zsh and package installs.
+  # Source them here, outside the helper, so plugin variables stay at shell scope.
+  _find_zsh_plugin() {
+    local plugin_file
+    for plugin_file in \
+      "$HOME/.zsh/$1/$1.zsh" \
+      "${ZSH_CUSTOM:-${ZSH:-$HOME/.oh-my-zsh}/custom}/plugins/$1/$1.plugin.zsh" \
+      "${ZSH:-$HOME/.oh-my-zsh}/plugins/$1/$1.plugin.zsh" \
+      "${HOMEBREW_PREFIX:-/opt/homebrew}/share/$1/$1.zsh" \
+      "/usr/local/share/$1/$1.zsh" \
+      "/usr/share/zsh/plugins/$1/$1.zsh" \
+      "/usr/share/$1/$1.zsh"; do
+      if [[ -r "$plugin_file" ]]; then
+        print -r -- "$plugin_file"
+        return 0
+      fi
+    done
+    return 1
+  }
+
+  if _zsh_plugin_file=$(_find_zsh_plugin zsh-autosuggestions); then
+    source "$_zsh_plugin_file"
+  fi
   bindkey '^[[A' history-beginning-search-backward   # optional: ↑ prefix search
   bindkey '^[[B' history-beginning-search-forward
-  source "$HOME/.oh-my-zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh"
+  if _zsh_plugin_file=$(_find_zsh_plugin zsh-syntax-highlighting); then
+    source "$_zsh_plugin_file"
+  fi
+  unset _zsh_plugin_file
+  unfunction _find_zsh_plugin
 fi
