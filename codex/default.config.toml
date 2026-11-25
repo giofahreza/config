@@ -1,6 +1,6 @@
-model = "cod:gpt-5.6-luna"
+model = "cod:gpt-6.1-sol"
 model_provider = "aiproxy"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "high"
 service_tier = "default"
 model_catalog_json = "~/.codex/model-catalogs/aiproxy.json"
 
@@ -61,6 +61,12 @@ trust_level = "trusted"
 [projects."/home/giofahreza/dev/nkl/Document-Generator-Service"]
 trust_level = "trusted"
 
+[projects."/home/giofahreza/dev/nkl/transaction"]
+trust_level = "trusted"
+
+[projects."/home/giofahreza/dev/yow/terminal-art"]
+trust_level = "trusted"
+
 [notice.model_migrations]
 "gpt-5.4" = "gpt-5.6-terra"
 "gpt-5.5" = "gpt-6.1-sol"
@@ -93,3 +99,6 @@ trusted_hash = "sha256:1ae6b81fee3f9167fcfa4927a2770b903e5b9e1b7d98f0200afc7a268
 
 [hooks.state."axiomcode@axiomcode:hooks/hooks.json:stop:1:0"]
 trusted_hash = "sha256:9bedaffd809aec72489d90145aa8c6f048ee4f0c22e4b56e8cea45bc52fdd699"
+
+[hooks.state."axiomcode@axiomcode:hooks/hooks.json:user_prompt_submit:3:0"]
+trusted_hash = "sha256:0f9a49dcbb604b0173cfbe723cff3f6b0cf0fe501477c03018351619cae9072e"
