@@ -13,13 +13,12 @@ cd ~/config
 ### Link the configurations
 
 ```bash
-# Zsh startup and Powerlevel10k theme
+# Zsh startup
 ln -sfnT "$HOME/config/zsh/.zshrc" "$HOME/.zshrc"
-ln -sfnT "$HOME/config/zsh/p10k.zsh" "$HOME/.p10k.zsh"
 
 # Application configs use the standard XDG paths, backed by ~/config.
 mkdir -p "$HOME/.config"
-for app in foot fuzzel hypr mako nvim tmux waybar; do
+for app in foot fuzzel hypr mako nvim tmux waybar wezterm; do
   ln -sfnT "$HOME/config/$app" "$HOME/.config/$app"
 done
 
@@ -63,7 +62,12 @@ Open Zen once to create its profile, then link the shared shortcuts and startup 
 sh "$HOME/config/zen/setup.sh"
 ```
 
-The script finds Zen's default profile on macOS or Linux and links its `customKeys.json` and `user.js` to the matching files in `~/config/zen`. Existing files are backed up beside the originals. For another profile, pass its root directory (shown in `about:profiles`):
+The script finds Zen's default profile on macOS or Linux and links its `customKeys.json` and `user.js` to the matching files in `~/config/zen`. Existing files are backed up beside the originals.
+
+On Linux, it checks `${XDG_CONFIG_HOME:-$HOME/.config}/zen` first, then the
+legacy `~/.zen` location. On macOS, it uses `~/Library/Application Support/zen`.
+
+For another profile, pass its root directory (shown in `about:profiles`):
 
 ```bash
 sh "$HOME/config/zen/setup.sh" "/path/to/zen/profile"
@@ -168,14 +172,15 @@ EOF
 
 ### Reload shell
 
+Restart the current shell to load the configuration and unload any old prompt hooks:
+
 ```bash
-source ~/.zshrc
+exec zsh
 ```
 
 ## Structure
 
 - `zsh/.zshrc` - Zsh configuration with aliases and functions
-- `zsh/p10k.zsh` - P10k powerlevel10k theme
 - `claude/` - Claude Code home (`~/.claude`): settings, CLAUDE.md, hooks, custom skills
 - `codex/` - Codex home (`~/.codex`): config profiles and model catalogs
 - `.gitignore` - Git ignore rules for secret files

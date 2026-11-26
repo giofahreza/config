@@ -3,11 +3,6 @@ if [ -z "${ZSH_VERSION:-}" ]; then
   return 0 2>/dev/null || exit 0
 fi
 
-# Powerlevel10k instant prompt. Keep this near the top of ~/.zshrc.
-if [[ -t 0 && -t 1 && -r "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "$HOME/.cache/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
@@ -319,19 +314,11 @@ if [[ -o interactive ]]; then
     fi
   }
 
-  if [[ -t 0 && -t 1 && -r "$HOME/.powerlevel10k/powerlevel10k.zsh-theme" ]]; then
-    source "$HOME/.powerlevel10k/powerlevel10k.zsh-theme"
-    if [[ -r "$HOME/config/zsh/p10k.zsh" ]]; then
-      source "$HOME/config/zsh/p10k.zsh"
-    elif [[ -r "$HOME/.p10k.zsh" ]]; then
-      source "$HOME/.p10k.zsh"
-    fi
-  else
-    PROMPT='%F{39}%~%f %# '
-    RPROMPT=
-    unsetopt promptcr
-    unsetopt promptsp
-  fi
+  # Native Zsh prompt: current directory and the user/root prompt character.
+  PROMPT='%F{39}%~%f %# '
+  RPROMPT=
+  unsetopt promptcr
+  unsetopt promptsp
 fi
 
 if ! command -v eza >/dev/null 2>&1; then

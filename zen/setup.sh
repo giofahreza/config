@@ -12,7 +12,12 @@ zen_profile=${1:-}
 if [ -z "$zen_profile" ]; then
   case "$(uname -s)" in
     Darwin) zen_home="$HOME/Library/Application Support/zen" ;;
-    Linux) zen_home="$HOME/.zen" ;;
+    Linux)
+      zen_home="${XDG_CONFIG_HOME:-$HOME/.config}/zen"
+      if [ ! -f "$zen_home/profiles.ini" ] && [ -f "$HOME/.zen/profiles.ini" ]; then
+        zen_home="$HOME/.zen"
+      fi
+      ;;
     *) printf 'Pass the Zen profile directory explicitly on this platform.\n' >&2; exit 1 ;;
   esac
 
